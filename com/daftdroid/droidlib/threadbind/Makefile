@@ -19,8 +19,10 @@ CC=gcc
 CFLAGS=-fpic -D_GNU_SOURCE -Wall -Werror -Wextra -Wmissing-prototypes
 LDFLAGS=-nostartfiles -shared -ldl
 OUT=bld
-OUTFILES = bld/bind.so bld/bindsetter.so
-JNI_AUTO_HEADER=$(OUT)/com_daftdroid_droidlib_bind_ClientBind.h
+OUTFILES = bld/bind.so bld/threadbind.so
+JAVA_PACKAGE=com.daftdroid.droidlib.threadbind
+JAVA_CLASS=ThreadBind
+JNI_AUTO_HEADER=$(OUT)/$(subst .,_,$(JAVA_PACKAGE))_$(JAVA_CLASS).h
 CFLAGS+=-include $(JNI_AUTO_HEADER)
 CFLAGS+=$(EXTRA_CFLAGS)
 
@@ -42,6 +44,10 @@ endif
 CFLAGS+=$(foreach d, $(JNI_INCLUDE), -I$d)
 
 all: $(OUTFILES)
+	#
+	# Don't forget to run 'make test'
+	#
+
 
 $(OUT):
 	mkdir $(OUT)
@@ -49,8 +55,8 @@ $(OUT):
 $(OUTFILES): $(OUT)/%.so: %.c $(JNI_AUTO_HEADER) Makefile $(OUT)
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
-$(JNI_AUTO_HEADER): ClientBind.java Makefile $(OUT)
-	javac ClientBind.java -d $(OUT) -h $(OUT)
+$(JNI_AUTO_HEADER): $(JAVA_CLASS).java Makefile $(OUT)
+	javac $(JAVA_CLASS).java -d $(OUT) -h $(OUT)
 
 .PHONY: clean
 clean:

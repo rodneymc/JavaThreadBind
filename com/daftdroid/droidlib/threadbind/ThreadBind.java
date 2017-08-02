@@ -17,11 +17,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
-package com.daftdroid.droidlib.bind;
+package com.daftdroid.droidlib.threadbind;
 
 import java.util.WeakHashMap;
 
-public class ClientBind
+public class ThreadBind
 {
 	private static WeakHashMap<Thread, String> bindStrings = new WeakHashMap<Thread, String>();
 
@@ -30,7 +30,7 @@ public class ClientBind
 	 */
 	static
 	{
-		System.loadLibrary("bindsetter");
+		System.loadLibrary("threadbind");
 	}
 
 	/*

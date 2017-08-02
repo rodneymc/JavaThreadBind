@@ -43,7 +43,7 @@ static int thread_bind_addr_getter(char * buf)
 	return 1;
 }
 
-JNIEXPORT void JNICALL Java_com_daftdroid_droidlib_bind_ClientBind_initialiseBindSetter
+JNIEXPORT void JNICALL Java_com_daftdroid_droidlib_threadbind_ThreadBind_initialiseBindSetter
   (JNIEnv * env, jclass class)
 {
 
