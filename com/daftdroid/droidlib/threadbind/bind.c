@@ -117,7 +117,7 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
                 bind_addr_saddr = inet_addr (bind_addr_env);
 		bind_addr_set = true;
         }
-
+	
 	lsk_in = (struct sockaddr_in *)sk;
         
 	/*	If the socket is Internet (v4) and the address is 0.0.0.0

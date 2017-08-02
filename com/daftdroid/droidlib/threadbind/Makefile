@@ -19,12 +19,20 @@ CC=gcc
 CFLAGS=-fpic -D_GNU_SOURCE -Wall -Werror -Wextra -Wmissing-prototypes
 LDFLAGS=-nostartfiles -shared -ldl
 OUT=bld
-OUTFILES = bld/bind.so bld/threadbind.so
+OUTFILES = bld/bind.so bld/libthreadbind.so
 JAVA_PACKAGE=com.daftdroid.droidlib.threadbind
 JAVA_CLASS=ThreadBind
 JNI_AUTO_HEADER=$(OUT)/$(subst .,_,$(JAVA_PACKAGE))_$(JAVA_CLASS).h
 CFLAGS+=-include $(JNI_AUTO_HEADER)
 CFLAGS+=$(EXTRA_CFLAGS)
+
+TESTFILE=Test
+TESTBENCH=$(subst .,/,$(JAVA_PACKAGE))/$(TESTFILE)
+TESTBENCHFILE=$(OUT)/$(TESTBENCH).class
+
+ifndef TESTPORT
+TESTPORT=9876
+endif
 
 ifndef JNI_INCLUDE
 
@@ -43,7 +51,7 @@ endif
 
 CFLAGS+=$(foreach d, $(JNI_INCLUDE), -I$d)
 
-all: $(OUTFILES)
+all: | $(OUTFILES)
 	#
 	# Don't forget to run 'make test'
 	#
@@ -52,13 +60,23 @@ all: $(OUTFILES)
 $(OUT):
 	mkdir $(OUT)
 
-$(OUTFILES): $(OUT)/%.so: %.c $(JNI_AUTO_HEADER) Makefile $(OUT)
+$(OUTFILES): $(OUT)/%.so: %.c $(JNI_AUTO_HEADER) Makefile
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+	echo $(JNI_AUTO_HEADER)
 
-$(JNI_AUTO_HEADER): $(JAVA_CLASS).java Makefile $(OUT)
+$(JNI_AUTO_HEADER): $(JAVA_CLASS).java Makefile | $(OUT) 
 	javac $(JAVA_CLASS).java -d $(OUT) -h $(OUT)
 
 .PHONY: clean
 clean:
 	rm bld/* -rf
 	echo $(EXTRA_CFLAGS)
+
+test: | $(TESTBENCHFILE) all
+	LD_PRELOAD=bld/bind.so java -cp $(OUT) -Djava.net.preferIPv4Stack=true -Djava.library.path=$(OUT) $(TESTBENCH) $(TESTPORT) && echo Test success
+	
+
+$(TESTBENCHFILE): $(TESTFILE).java | $(OUT)
+	javac $(TESTFILE).java -d $(OUT) -cp ../../../..
+	echo build $(TESTBENCHFILE)
+

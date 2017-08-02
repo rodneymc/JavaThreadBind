@@ -30,13 +30,18 @@ public class ThreadBind
 	 */
 	static
 	{
+		if (!System.getProperty("java.net.preferIPv4Stack").toLowerCase().equals("true"))
+		{
+			throw new IllegalStateException ("java.net.preferIPv4Stack must be true");
+		}
 		System.loadLibrary("threadbind");
+		initialiseBindSetter();
 	}
 
 	/*
 	 * Initialises the native code.
 	 */
-	public static native void initialiseBindSetter();
+	private static native void initialiseBindSetter();
 
 	/*
 	 * Get the IP address string for the current thread.
