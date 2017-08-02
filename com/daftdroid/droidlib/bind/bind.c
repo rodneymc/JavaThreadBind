@@ -2,6 +2,21 @@
  *    Copyright (C) 2000  Daniel Ryde
  *       Small amendment by Daniel Lange, 2010
  *
+	Changes by rodney@daftdroid.com 2017:
+	The functionality of this version does not reflect the functionality of the original
+	This module has been adapted to be part of the JavaThreadBind project.
+	Changes I made:
+
+	 * Bind address no longer taken from an envionment variable as shown in the comments below,
+           it is instead taken by calling get_thread_bind_addr() which is a function pointer
+           initialised by set_thread_bind_addr_getter(). 
+         * I have moved some structs onto the stack to facilitate thread safety
+         * Some printf comments which caused segfaults if uncommented were deleted
+
+	The above changes do not introduce link dependencies, however something needs to provide
+        a function for get_thread_bind_addr to point to.
+
+ 
  *          This library is free software; you can redistribute it and/or
  *             modify it under the terms of the GNU Lesser General Public
  *                License as published by the Free Software Foundation; either
