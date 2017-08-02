@@ -2,15 +2,12 @@
 #include <string.h>
 #include "mybind.h"
 
-// This include generated in the build directory at compile time
-#include "bld/com_daftdroid_droidlib_bind_ClientBind.h"
-
 
 static JavaVM* jvm;
 static jclass bindSetterClass;
 static jmethodID getterMethod;
 
-int thread_bind_addr_getter(char * buf)
+static int thread_bind_addr_getter(char * buf)
 {
        JNIEnv * env;
         (*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_6);
@@ -27,7 +24,7 @@ int thread_bind_addr_getter(char * buf)
 }
 
 JNIEXPORT void JNICALL Java_com_daftdroid_droidlib_bind_ClientBind_initialiseBindSetter
-  (JNIEnv *, jclass)
+  (JNIEnv * env, jclass class)
 {
 
 	(*env)->GetJavaVM(env, &jvm);
